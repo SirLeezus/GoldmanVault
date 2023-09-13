@@ -1,0 +1,10 @@
+name: GoldmanVault
+version: ${version}
+main: lee.code.vault.Vault
+api-version: 1.20
+author: Lee
+folia-supported: true
+commands:
+  vault:
+    description: Opens your vault menu.
+    permission: vault.command.vault
