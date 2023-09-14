@@ -70,11 +70,12 @@ public class VaultMenu extends MenuPaginatedGUI {
     decorate(player);
   }
 
-  private MenuButton createItemButton(Player player, VaultItemData vaultItemData) {
+  private MenuButton createItemButton(Player player, VaultItemData itemData) {
     return new MenuButton()
-      .creator(p -> createDisplayItem(vaultItemData.getItem(), vaultItemData.getAmount()))
+      .creator(p -> createDisplayItem(itemData.getItem(), itemData.getAmount()))
       .consumer(e -> {
         final UUID uuid = player.getUniqueId();
+        final VaultItemData vaultItemData = cachePlayers.getItemData().getVaultItemData(uuid, itemData.getItem());
         int removeAmount = e.isLeftClick() ? 64 : 1;
         if (removeAmount > vaultItemData.getAmount()) removeAmount = vaultItemData.getAmount();
         if (!ItemUtil.canReceiveItems(player, vaultItemData.getItem(), removeAmount)) {
@@ -108,8 +109,8 @@ public class VaultMenu extends MenuPaginatedGUI {
       .consumer(e -> {
         switch (filter) {
           case NAME -> cachePlayers.setFilter(uuid, Filter.AMOUNT);
-          case AMOUNT -> cachePlayers.setFilter(uuid, Filter.ADDED);
-          case ADDED -> cachePlayers.setFilter(uuid, Filter.NAME);
+          case AMOUNT -> cachePlayers.setFilter(uuid, Filter.UPDATED);
+          case UPDATED -> cachePlayers.setFilter(uuid, Filter.NAME);
         }
         cachePlayers.getItemData().sortItems(uuid);
         getMenuSoundManager().playClickSound(player);

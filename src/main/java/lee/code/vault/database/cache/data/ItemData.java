@@ -87,14 +87,14 @@ public class ItemData {
   }
 
   public void updateItemAmount(UUID uuid, ItemStack item, int amount) {
-    //ITEM1!TIME!AMOUNT,ITEM2!TIME!AMOUNT,ITEM3!TIME!AMOUNT
     final PlayerTable playerTable = cachePlayers.getPlayerTable(uuid);
     final VaultItemData vaultItemData = getVaultItemData(uuid, item);
     final List<String> itemList = new ArrayList<>(List.of(playerTable.getItems().split(",")));
     itemList.remove(vaultItemData.getSerializedItem() + "!" + vaultItemData.getItemAdded() + "!" + vaultItemData.getAmount());
-    itemList.add(vaultItemData.getSerializedItem() + "!" + vaultItemData.getItemAdded() + "!" + amount);
+    itemList.add(vaultItemData.getSerializedItem() + "!" + System.currentTimeMillis() + "!" + amount);
     playerTable.setItems(StringUtils.join(itemList, ","));
     vaultItemData.setAmount(amount);
+    vaultItemData.setItemAdded(System.currentTimeMillis());
     sortItems(uuid);
     cachePlayers.updatePlayerDatabase(playerTable);
   }
@@ -113,7 +113,7 @@ public class ItemData {
         final Map<VaultItemData, Integer> sortedMap = CoreUtil.sortByValue(storageMap, Comparator.reverseOrder());
         playerItemCache.put(uuid, new LinkedList<>(sortedMap.keySet()));
       }
-      case ADDED -> {
+      case UPDATED -> {
         final HashMap<VaultItemData, Long> storageMap = new HashMap<>();
         for (VaultItemData vaultItemData : getAllItems(uuid).values()) storageMap.put(vaultItemData, vaultItemData.getItemAdded());
         final Map<VaultItemData, Long> sortedMap = CoreUtil.sortByValue(storageMap, Comparator.reverseOrder());

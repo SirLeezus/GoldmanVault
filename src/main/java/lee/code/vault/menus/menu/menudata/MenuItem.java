@@ -38,7 +38,7 @@ public enum MenuItem {
       case AMOUNT -> {
         return ItemUtil.createItem(material, name, Lang.MENU_FILTER_ITEM_LORE_BY_AMOUNT.getString(), 0, skin);
       }
-      case ADDED -> {
+      case UPDATED -> {
         return ItemUtil.createItem(material, name, Lang.MENU_FILTER_ITEM_LORE_BY_ADDED.getString(), 0, skin);
       }
     }
