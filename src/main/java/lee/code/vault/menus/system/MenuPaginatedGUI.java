@@ -22,7 +22,7 @@ public abstract class MenuPaginatedGUI implements InventoryHandler {
   private Inventory inventory;
   private final ItemStack fillerGlass = MenuItem.FILLER_GLASS.createItem();
   private final DelayManager delayManager = new DelayManager();
-  private final ConcurrentHashMap<Integer, MenuButton> buttonMap = new ConcurrentHashMap<>();
+  private final HashMap<Integer, MenuButton> buttonMap = new HashMap<>();
   @Getter private final MenuSoundManager menuSoundManager = new MenuSoundManager();
 
   public void setInventory() {
