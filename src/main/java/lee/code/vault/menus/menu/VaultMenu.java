@@ -36,7 +36,6 @@ public class VaultMenu extends MenuPaginatedGUI {
 
   @Override
   public void decorate(Player player) {
-    addBorderGlass();
     final List<VaultItemData> items = cachePlayers.getItemData().getVaultItems(player.getUniqueId());
     int slot = 0;
     for (int i = 0; i < maxItemsPerPage; i++) {
@@ -46,6 +45,7 @@ public class VaultMenu extends MenuPaginatedGUI {
       addButton(paginatedSlots.get(slot), createItemButton(player,vaultItemData));
       slot++;
     }
+    addBorderGlass();
     addFilterButton(player);
     addPaginatedButtons(player);
     super.decorate(player);

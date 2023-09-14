@@ -8,10 +8,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ItemData {
   private final CachePlayers cachePlayers;
-  private final HashMap<UUID, HashMap<ItemStack, VaultItemData>> itemCache = new HashMap<>();
+  private final ConcurrentHashMap<UUID, ConcurrentHashMap<ItemStack, VaultItemData>> itemCache = new ConcurrentHashMap<>();
   private final HashMap<UUID, List<VaultItemData>> playerItemCache = new HashMap<>();
 
   public ItemData(CachePlayers cachePlayers) {
@@ -22,7 +23,7 @@ public class ItemData {
     if (itemCache.containsKey(uuid)) {
       itemCache.get(uuid).put(vaultItemData.getItem(), vaultItemData);
     } else {
-      final HashMap<ItemStack, VaultItemData> map = new HashMap<>();
+      final ConcurrentHashMap<ItemStack, VaultItemData> map = new ConcurrentHashMap<>();
       map.put(vaultItemData.getItem(), vaultItemData);
       itemCache.put(uuid, map);
     }
@@ -49,8 +50,8 @@ public class ItemData {
     return new LinkedList<>(playerItemCache.get(uuid));
   }
 
-  private HashMap<ItemStack, VaultItemData> getAllItems(UUID uuid) {
-    if (!itemCache.containsKey(uuid)) return new HashMap<>();
+  private ConcurrentHashMap<ItemStack, VaultItemData> getAllItems(UUID uuid) {
+    if (!itemCache.containsKey(uuid)) return new ConcurrentHashMap<>();
     return itemCache.get(uuid);
   }
 

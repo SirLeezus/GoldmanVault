@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class MenuPaginatedGUI implements InventoryHandler {
   private final List<Integer> border = Arrays.asList(45, 46, 47, 48, 49, 50, 51, 52, 53);
@@ -21,7 +22,7 @@ public abstract class MenuPaginatedGUI implements InventoryHandler {
   private Inventory inventory;
   private final ItemStack fillerGlass = MenuItem.FILLER_GLASS.createItem();
   private final DelayManager delayManager = new DelayManager();
-  private final Map<Integer, MenuButton> buttonMap = new HashMap<>();
+  private final ConcurrentHashMap<Integer, MenuButton> buttonMap = new ConcurrentHashMap<>();
   @Getter private final MenuSoundManager menuSoundManager = new MenuSoundManager();
 
   public void setInventory() {
