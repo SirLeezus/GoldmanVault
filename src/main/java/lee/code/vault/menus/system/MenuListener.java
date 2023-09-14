@@ -5,6 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class MenuListener implements Listener {
   private final MenuManager menuManager;
@@ -14,22 +15,27 @@ public class MenuListener implements Listener {
   }
 
   @EventHandler
-  public void onClick(InventoryClickEvent event) {
-    menuManager.handleClick(event);
+  public void onClick(InventoryClickEvent e) {
+    menuManager.handleClick(e);
   }
 
   @EventHandler
-  public void onOpen(InventoryOpenEvent event) {
-    menuManager.handleOpen(event);
+  public void onOpen(InventoryOpenEvent e) {
+    menuManager.handleOpen(e);
   }
 
   @EventHandler
-  public void onClose(InventoryCloseEvent event) {
-    menuManager.handleClose(event);
+  public void onClose(InventoryCloseEvent e) {
+    menuManager.handleClose(e);
   }
 
   @EventHandler
-  public void onPlayerInventoryClick(VaultPlayerInventoryClickEvent event) {
-    menuManager.handlePlayerInventoryClick(event);
+  public void onQuit(PlayerQuitEvent e) {
+    menuManager.handleQuit(e);
+  }
+
+  @EventHandler
+  public void onPlayerInventoryClick(VaultPlayerInventoryClickEvent e) {
+    menuManager.handlePlayerInventoryClick(e);
   }
 }

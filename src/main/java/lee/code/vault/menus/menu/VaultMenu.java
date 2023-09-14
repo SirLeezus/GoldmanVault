@@ -3,6 +3,7 @@ package lee.code.vault.menus.menu;
 import lee.code.vault.database.cache.CachePlayers;
 import lee.code.vault.database.cache.data.VaultItemData;
 import lee.code.vault.enums.Filter;
+import lee.code.vault.menus.system.MenuPlayerData;
 import lee.code.vault.menus.system.VaultPlayerInventoryClickEvent;
 import lee.code.vault.lang.Lang;
 import lee.code.vault.menus.menu.menudata.MenuItem;
@@ -24,7 +25,8 @@ import java.util.UUID;
 public class VaultMenu extends MenuPaginatedGUI {
   private final CachePlayers cachePlayers;
 
-  public VaultMenu(CachePlayers cachePlayers) {
+  public VaultMenu(MenuPlayerData menuPlayerData, CachePlayers cachePlayers) {
+    super(menuPlayerData);
     this.cachePlayers = cachePlayers;
     setInventory();
   }
@@ -38,6 +40,7 @@ public class VaultMenu extends MenuPaginatedGUI {
   public void decorate(Player player) {
     final List<VaultItemData> items = cachePlayers.getItemData().getVaultItems(player.getUniqueId());
     int slot = 0;
+    page = menuPlayerData.getPage();
     for (int i = 0; i < maxItemsPerPage; i++) {
       index = maxItemsPerPage * page + i;
       if (index >= items.size()) break;
@@ -60,8 +63,15 @@ public class VaultMenu extends MenuPaginatedGUI {
     int amount = e.isLeftClick() ? item.getAmount() : 1;
     if (e.isShiftClick()) amount = ItemUtil.getItemAmount(player, item);
     item.setAmount(1);
-    if (cachePlayers.getItemData().hasVaultItem(uuid, item)) cachePlayers.getItemData().updateItemAmount(uuid, item, cachePlayers.getItemData().getVaultItemData(uuid, item).getAmount() + amount);
-    else cachePlayers.getItemData().addItem(uuid, item, amount);
+    if (cachePlayers.getItemData().hasVaultItem(uuid, item)) {
+      cachePlayers.getItemData().updateItemAmount(uuid, item, cachePlayers.getItemData().getVaultItemData(uuid, item).getAmount() + amount);
+    } else {
+      if (!cachePlayers.canAddVaultItem(player)) {
+        player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_MENU_VAULT_MAX_ITEMS.getComponent(new String[]{CoreUtil.parseValue(cachePlayers.getMaxUniqueItems(player))})));
+        return;
+      }
+      cachePlayers.getItemData().addItem(uuid, item, amount);
+    }
     getMenuSoundManager().playStoreSound(player);
     if (e.isShiftClick()) ItemUtil.removePlayerItems(player, item, amount, false);
     else ItemUtil.removePlayerItemBySlot(player, e.getSlot(), amount);
@@ -83,9 +93,9 @@ public class VaultMenu extends MenuPaginatedGUI {
           player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_NO_INVENTORY_SPACE.getComponent(null)));
           return;
         }
+        getMenuSoundManager().playTakeSound(player);
         if (vaultItemData.getAmount() <= removeAmount) cachePlayers.getItemData().removeItem(uuid, vaultItemData.getItem());
         else cachePlayers.getItemData().updateItemAmount(uuid, vaultItemData.getItem(), vaultItemData.getAmount() - removeAmount);
-        getMenuSoundManager().playTakeSound(player);
         ItemUtil.giveItem(player, new ItemStack(vaultItemData.getItem()), removeAmount);
         clearInventory();
         clearButtons();
@@ -127,6 +137,7 @@ public class VaultMenu extends MenuPaginatedGUI {
         getMenuSoundManager().playClickSound(player);
         if (!((index + 1) >= cachePlayers.getItemData().getVaultItems(player.getUniqueId()).size())) {
           page += 1;
+          menuPlayerData.setPage(page);
           clearInventory();
           clearButtons();
           decorate(player);
@@ -139,6 +150,7 @@ public class VaultMenu extends MenuPaginatedGUI {
           player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_PREVIOUS_PAGE.getComponent(null)));
         } else {
           page -= 1;
+          menuPlayerData.setPage(page);
           clearInventory();
           clearButtons();
           decorate(player);

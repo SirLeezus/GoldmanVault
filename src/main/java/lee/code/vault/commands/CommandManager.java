@@ -4,6 +4,7 @@ import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import lee.code.vault.Vault;
 import lee.code.vault.lang.Lang;
 import lee.code.vault.menus.menu.VaultMenu;
+import lee.code.vault.menus.system.MenuManager;
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
@@ -69,7 +70,8 @@ public class CommandManager implements CommandExecutor {
       }
     }
     if (sender instanceof Player player) {
-      vault.getMenuManager().openMenu(new VaultMenu(vault.getCacheManager().getCachePlayers()), player);
+      final MenuManager menuManager = vault.getMenuManager();
+      menuManager.openMenu(new VaultMenu(menuManager.getMenuPlayerData(player.getUniqueId()), vault.getCacheManager().getCachePlayers()), player);
     } else {
       performAsync(sender, getSubCommand("help"), args);
     }

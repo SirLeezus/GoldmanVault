@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.text.WordUtils;
+import org.bukkit.entity.Player;
 
 import java.text.DecimalFormat;
 import java.util.Comparator;
@@ -41,5 +42,16 @@ public class CoreUtil {
       .sorted(Map.Entry.comparingByValue(comparator))
       .forEachOrdered(entry -> temp.put(entry.getKey(), entry.getValue()));
     return temp;
+  }
+
+  public static int getHighestPermission(Player player, String permission, int maxSearch) {
+    int highestLevel = 0;
+    for (int i = maxSearch; i >= 1; i--) {
+      final String targetPermission = permission + i;
+      if (player.hasPermission(targetPermission) && i > highestLevel) {
+        highestLevel = i;
+      }
+    }
+    return highestLevel;
   }
 }

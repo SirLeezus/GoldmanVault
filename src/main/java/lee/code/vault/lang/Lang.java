@@ -13,6 +13,7 @@ public enum Lang {
   MENU_FILTER_ITEM_LORE_BY_AMOUNT("&e» &aFilter By Amount\n&e» &7Filter By Name\n&e» &7Filter By Updated"),
   MENU_FILTER_ITEM_LORE_BY_NAME("&e» &7Filter By Amount\n&e» &aFilter By Name\n&e» &7Filter By Updated"),
   MENU_FILTER_ITEM_LORE_BY_ADDED("&e» &7Filter By Amount\n&e» &7Filter By Name\n&e» &aFilter By Updated"),
+  ERROR_MENU_VAULT_MAX_ITEMS("&cYou have reached your vault unique item limit of &3{0}&c."),
   ERROR_NO_PERMISSION("&cYou do not have permission for this."),
   ERROR_ONE_COMMAND_AT_A_TIME("&cYou're currently processing another command, please wait for it to finish."),
   ERROR_PREVIOUS_PAGE("&7You are already on the first page."),

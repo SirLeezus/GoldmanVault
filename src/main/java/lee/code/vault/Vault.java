@@ -19,7 +19,7 @@ public class Vault  extends JavaPlugin {
   @Getter private MenuManager menuManager;
   @Getter private CommandManager commandManager;
   @Getter private CacheManager cacheManager;
-  private DatabaseManager databaseManager;
+  @Getter private DatabaseManager databaseManager;
 
   @Override
   public void onEnable() {

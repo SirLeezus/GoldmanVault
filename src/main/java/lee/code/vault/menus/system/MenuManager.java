@@ -4,17 +4,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class MenuManager {
   private final Map<Inventory, InventoryHandler> activeInventories = new HashMap<>();
+  private final Map<UUID, MenuPlayerData> playerMenuData = new HashMap<>();
 
   public void openMenu(MenuPaginatedGUI gui, Player player) {
     registerHandledInventory(gui.getInventory(), gui);
     player.openInventory(gui.getInventory());
+  }
+
+  public MenuPlayerData getMenuPlayerData(UUID uuid) {
+    if (!playerMenuData.containsKey(uuid)) playerMenuData.put(uuid, new MenuPlayerData(uuid));
+    return playerMenuData.get(uuid);
   }
 
   public void registerHandledInventory(Inventory inventory, InventoryHandler handler) {
@@ -47,5 +55,9 @@ public class MenuManager {
   public void handlePlayerInventoryClick(VaultPlayerInventoryClickEvent event) {
     final InventoryHandler handler = activeInventories.get(event.getInventory());
     if (handler != null) handler.onPlayerInventoryClick(event);
+  }
+
+  public void handleQuit(PlayerQuitEvent event) {
+    playerMenuData.remove(event.getPlayer().getUniqueId());
   }
 }

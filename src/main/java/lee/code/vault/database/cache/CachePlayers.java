@@ -5,7 +5,9 @@ import lee.code.vault.database.cache.data.ItemData;
 import lee.code.vault.database.handlers.DatabaseHandler;
 import lee.code.vault.database.tables.PlayerTable;
 import lee.code.vault.enums.Filter;
+import lee.code.vault.utils.CoreUtil;
 import lombok.Getter;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,5 +48,18 @@ public class CachePlayers extends DatabaseHandler {
     final PlayerTable playerTable = getPlayerTable(uuid);
     playerTable.setFilter(filter);
     updatePlayerDatabase(playerTable);
+  }
+
+  public int getMaxPages(Player player) {
+    if (player.isOp()) return 30;
+    return CoreUtil.getHighestPermission(player, "vault.pages.", 100);
+  }
+
+  public int getMaxUniqueItems(Player player) {
+    return getMaxPages(player) * 45;
+  }
+
+  public boolean canAddVaultItem(Player player) {
+    return itemData.getUniqueItemAmount(player.getUniqueId()) + 1 <= getMaxUniqueItems(player);
   }
 }

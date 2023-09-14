@@ -63,6 +63,11 @@ public class ItemData {
     return itemCache.get(uuid).containsKey(item);
   }
 
+  public int getUniqueItemAmount(UUID uuid) {
+    if (!playerItemCache.containsKey(uuid)) return 0;
+    return playerItemCache.get(uuid).size();
+  }
+
   public void addItem(UUID uuid, ItemStack item, int amount) {
     final PlayerTable playerTable = cachePlayers.getPlayerTable(uuid);
     final String serializedItem = ItemUtil.serializeItemStack(item);
