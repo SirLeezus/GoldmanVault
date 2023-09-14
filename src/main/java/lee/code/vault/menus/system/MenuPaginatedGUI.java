@@ -78,11 +78,11 @@ public abstract class MenuPaginatedGUI implements InventoryHandler {
   public void onClick(InventoryClickEvent e) {
     final Player player = (Player) e.getWhoClicked();
     e.setCancelled(true);
+    if (delayManager.hasDelayOrSchedule(player.getUniqueId())) return;
     if (player.getInventory().equals(e.getClickedInventory())) {
-      Bukkit.getServer().getPluginManager().callEvent(new VaultPlayerInventoryClickEvent(e.getInventory(), player, e.getCurrentItem()));
+      Bukkit.getServer().getPluginManager().callEvent(new VaultPlayerInventoryClickEvent(e.getInventory(), player, e.getCurrentItem(), e.getSlot(), e.isShiftClick(), e.isLeftClick()));
       return;
     }
-    if (delayManager.hasDelayOrSchedule(player.getUniqueId())) return;
     final int slot = e.getSlot();
     final MenuButton button = buttonMap.get(slot);
     if (button != null) {

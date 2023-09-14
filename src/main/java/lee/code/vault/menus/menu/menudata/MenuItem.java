@@ -1,5 +1,7 @@
 package lee.code.vault.menus.menu.menudata;
 
+import lee.code.vault.enums.Filter;
+import lee.code.vault.lang.Lang;
 import lee.code.vault.utils.ItemUtil;
 import lombok.AllArgsConstructor;
 import org.bukkit.Material;
@@ -11,7 +13,7 @@ public enum MenuItem {
   FILLER_GLASS(Material.BLACK_STAINED_GLASS_PANE, "", null, false, false, null),
   NEXT_PAGE(Material.PAPER, "&e&lNext Page ->", null, false, false, null),
   PREVIOUS_PAGE(Material.PAPER, "&e&l<- Prev Page", null, false, false, null),
-
+  FILTER(Material.HOPPER, "&6&lFilter", null, false, false, null),
   ;
 
   private final Material material;
@@ -26,5 +28,20 @@ public enum MenuItem {
     if (hideItemFlags) ItemUtil.hideItemFlags(item);
     if (enchantItem) ItemUtil.enchantItem(item, Enchantment.ARROW_INFINITE, 1);
     return item;
+  }
+
+  public ItemStack createFilterItem(Filter filter) {
+    switch (filter) {
+      case NAME -> {
+        return ItemUtil.createItem(material, name, Lang.MENU_FILTER_ITEM_LORE_BY_NAME.getString(), 0, skin);
+      }
+      case AMOUNT -> {
+        return ItemUtil.createItem(material, name, Lang.MENU_FILTER_ITEM_LORE_BY_AMOUNT.getString(), 0, skin);
+      }
+      case ADDED -> {
+        return ItemUtil.createItem(material, name, Lang.MENU_FILTER_ITEM_LORE_BY_ADDED.getString(), 0, skin);
+      }
+    }
+    return createItem();
   }
 }

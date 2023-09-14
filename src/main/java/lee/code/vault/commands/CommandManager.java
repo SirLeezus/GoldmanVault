@@ -69,7 +69,7 @@ public class CommandManager implements CommandExecutor {
       }
     }
     if (sender instanceof Player player) {
-      vault.getMenuManager().openMenu(new VaultMenu(vault.getCacheManager().getCachePlayers().getItemData()), player);
+      vault.getMenuManager().openMenu(new VaultMenu(vault.getCacheManager().getCachePlayers()), player);
     } else {
       performAsync(sender, getSubCommand("help"), args);
     }

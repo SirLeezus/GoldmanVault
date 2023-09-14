@@ -45,8 +45,8 @@ public class ItemData {
   }
 
   public List<VaultItemData> getVaultItems(UUID uuid) {
-    if (!playerItemCache.containsKey(uuid)) return new ArrayList<>();
-    return playerItemCache.get(uuid);
+    if (!playerItemCache.containsKey(uuid)) return new LinkedList<>();
+    return new LinkedList<>(playerItemCache.get(uuid));
   }
 
   private HashMap<ItemStack, VaultItemData> getAllItems(UUID uuid) {
@@ -101,10 +101,22 @@ public class ItemData {
 
   public void sortItems(UUID uuid) {
     switch (cachePlayers.getFilter(uuid)) {
-      case AMOUNT -> {
+      case NAME -> {
         final HashMap<VaultItemData, String> storageMap = new HashMap<>();
         for (VaultItemData vaultItemData : getAllItems(uuid).values()) storageMap.put(vaultItemData, ItemUtil.getItemDisplayName(vaultItemData.getItem()));
         final Map<VaultItemData, String> sortedMap = CoreUtil.sortByValue(storageMap, Comparator.naturalOrder());
+        playerItemCache.put(uuid, new LinkedList<>(sortedMap.keySet()));
+      }
+      case AMOUNT -> {
+        final HashMap<VaultItemData, Integer> storageMap = new HashMap<>();
+        for (VaultItemData vaultItemData : getAllItems(uuid).values()) storageMap.put(vaultItemData, vaultItemData.getAmount());
+        final Map<VaultItemData, Integer> sortedMap = CoreUtil.sortByValue(storageMap, Comparator.reverseOrder());
+        playerItemCache.put(uuid, new LinkedList<>(sortedMap.keySet()));
+      }
+      case ADDED -> {
+        final HashMap<VaultItemData, Long> storageMap = new HashMap<>();
+        for (VaultItemData vaultItemData : getAllItems(uuid).values()) storageMap.put(vaultItemData, vaultItemData.getItemAdded());
+        final Map<VaultItemData, Long> sortedMap = CoreUtil.sortByValue(storageMap, Comparator.reverseOrder());
         playerItemCache.put(uuid, new LinkedList<>(sortedMap.keySet()));
       }
     }

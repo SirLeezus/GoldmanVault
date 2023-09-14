@@ -14,12 +14,18 @@ public class VaultPlayerInventoryClickEvent extends Event implements Cancellable
   @Getter Inventory inventory;
   @Getter Player player;
   @Getter ItemStack item;
+  @Getter int slot;
+  @Getter boolean isShiftClick;
+  @Getter boolean isLeftClick;
   @Setter @Getter boolean cancelled;
 
-  public VaultPlayerInventoryClickEvent(Inventory inventory, Player player, ItemStack item) {
+  public VaultPlayerInventoryClickEvent(Inventory inventory, Player player, ItemStack item, int slot, boolean isShiftClick, boolean isLeftClick) {
     this.inventory = inventory;
     this.player = player;
     this.item = item;
+    this.slot = slot;
+    this.isShiftClick = isShiftClick;
+    this.isLeftClick = isLeftClick;
   }
 
   @Override

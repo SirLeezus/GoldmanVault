@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,10 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ItemUtil {
 
@@ -113,5 +111,79 @@ public class ItemUtil {
     if (itemMeta == null) return;
     itemMeta.addEnchant(enchantment, level, false);
     itemStack.setItemMeta(itemMeta);
+  }
+
+  public static void removePlayerItemBySlot(Player player, int slot, int amount) {
+    final ItemStack item = player.getInventory().getItem(slot);
+    if (item == null) return;
+    if (item.getAmount() == amount) {
+      player.getInventory().setItem(slot, null);
+    } else {
+      item.setAmount(item.getAmount() - amount);
+    }
+  }
+  public static void removePlayerItems(Player player, ItemStack item, int count, boolean handOnly) {
+    if (!handOnly) {
+      final Map<Integer, ItemStack> ammo = new HashMap<>();
+      for (int i = 0; i < player.getInventory().getSize(); i++) {
+        final ItemStack stack = player.getInventory().getItem(i);
+        if (stack == null) continue;
+        if (stack.isSimilar(item)) {
+          ammo.put(i, stack);
+        }
+      }
+      int found = 0;
+      for (ItemStack stack : ammo.values()) found += stack.getAmount();
+      if (count > found) return;
+      for (Integer index : ammo.keySet()) {
+        final ItemStack stack = ammo.get(index);
+        if (stack.isSimilar(item)) {
+          final int removed = Math.min(count, stack.getAmount());
+          count -= removed;
+          if (stack.getAmount() == removed) player.getInventory().setItem(index, null);
+          else stack.setAmount(stack.getAmount() - removed);
+          if (count <= 0) break;
+        }
+      }
+    } else {
+      final ItemStack handItem = player.getInventory().getItemInMainHand();
+      handItem.setAmount(handItem.getAmount() - count);
+    }
+  }
+
+  public static void giveItem(Player player, ItemStack item, int amount) {
+    if (item.getMaxStackSize() < 64) {
+      for (int i = 0; i < amount; i++) {
+        player.getInventory().addItem(item);
+      }
+    } else {
+      item.setAmount(amount);
+      player.getInventory().addItem(item);
+    }
+  }
+
+  public static boolean canReceiveItems(Player player, ItemStack item, int amount) {
+    return getFreeSpace(player, item) >= amount;
+  }
+
+  public static int getFreeSpace(Player player, ItemStack item) {
+    int freeSpaceCount = 0;
+    for (int slot = 0; slot <= 35; slot++) {
+      final ItemStack slotItem = player.getInventory().getItem(slot);
+      if (slotItem == null || slotItem.getType() == Material.AIR) {
+        freeSpaceCount += item.getMaxStackSize();
+      } else if (slotItem.isSimilar(item))
+        freeSpaceCount += Math.max(0, slotItem.getMaxStackSize() - slotItem.getAmount());
+    }
+    return freeSpaceCount;
+  }
+
+  public static int getItemAmount(Player player, ItemStack targetItem) {
+    int amount = 0;
+    for (ItemStack item : player.getInventory().getContents()) {
+      if (item == null || !item.isSimilar(targetItem)) continue;
+      amount += item.getAmount();
+    }
+    return amount;
   }
 }
