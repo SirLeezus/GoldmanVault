@@ -77,6 +77,7 @@ public class VaultMenu extends MenuPaginatedGUI {
         final UUID uuid = player.getUniqueId();
         final VaultItemData vaultItemData = cachePlayers.getItemData().getVaultItemData(uuid, itemData.getItem());
         int removeAmount = e.isLeftClick() ? 64 : 1;
+        if (e.isShiftClick()) removeAmount = ItemUtil.getFreeSpace(player, itemData.getItem());
         if (removeAmount > vaultItemData.getAmount()) removeAmount = vaultItemData.getAmount();
         if (!ItemUtil.canReceiveItems(player, vaultItemData.getItem(), removeAmount)) {
           player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_NO_INVENTORY_SPACE.getComponent(null)));
@@ -107,13 +108,13 @@ public class VaultMenu extends MenuPaginatedGUI {
     addButton(49, new MenuButton()
       .creator(p -> filterItem)
       .consumer(e -> {
+        getMenuSoundManager().playClickSound(player);
         switch (filter) {
           case NAME -> cachePlayers.setFilter(uuid, Filter.AMOUNT);
           case AMOUNT -> cachePlayers.setFilter(uuid, Filter.UPDATED);
           case UPDATED -> cachePlayers.setFilter(uuid, Filter.NAME);
         }
         cachePlayers.getItemData().sortItems(uuid);
-        getMenuSoundManager().playClickSound(player);
         clearInventory();
         clearButtons();
         decorate(player);
@@ -123,9 +124,9 @@ public class VaultMenu extends MenuPaginatedGUI {
   private void addPaginatedButtons(Player player) {
     addButton(51, new MenuButton().creator(p -> MenuItem.NEXT_PAGE.createItem())
       .consumer(e -> {
+        getMenuSoundManager().playClickSound(player);
         if (!((index + 1) >= cachePlayers.getItemData().getVaultItems(player.getUniqueId()).size())) {
           page += 1;
-          getMenuSoundManager().playClickSound(player);
           clearInventory();
           clearButtons();
           decorate(player);
@@ -133,11 +134,11 @@ public class VaultMenu extends MenuPaginatedGUI {
       }));
     addButton(47, new MenuButton().creator(p -> MenuItem.PREVIOUS_PAGE.createItem())
       .consumer(e -> {
+        getMenuSoundManager().playClickSound(player);
         if (page == 0) {
           player.sendMessage(Lang.PREFIX.getComponent(null).append(Lang.ERROR_PREVIOUS_PAGE.getComponent(null)));
         } else {
           page -= 1;
-          getMenuSoundManager().playClickSound(player);
           clearInventory();
           clearButtons();
           decorate(player);
