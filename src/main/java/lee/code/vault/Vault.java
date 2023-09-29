@@ -1,8 +1,8 @@
 package lee.code.vault;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import lee.code.vault.commands.CommandManager;
 import lee.code.vault.commands.TabCompletion;
+import lee.code.vault.commands.VaultCMD;
 import lee.code.vault.database.CacheManager;
 import lee.code.vault.database.DatabaseManager;
 import lee.code.vault.listeners.JoinListener;
@@ -17,7 +17,6 @@ import java.io.IOException;
 
 public class Vault  extends JavaPlugin {
   @Getter private MenuManager menuManager;
-  @Getter private CommandManager commandManager;
   @Getter private CacheManager cacheManager;
   @Getter private DatabaseManager databaseManager;
 
@@ -26,7 +25,6 @@ public class Vault  extends JavaPlugin {
     this.databaseManager = new DatabaseManager(this);
     this.cacheManager = new CacheManager(databaseManager);
     this.menuManager = new MenuManager();
-    this.commandManager = new CommandManager(this);
     databaseManager.initialize(false);
 
     registerListeners();
@@ -39,8 +37,8 @@ public class Vault  extends JavaPlugin {
   }
 
   private void registerCommands() {
-    getCommand("vault").setExecutor(commandManager);
-    getCommand("vault").setTabCompleter(new TabCompletion(commandManager));
+    getCommand("vault").setExecutor(new VaultCMD(this));
+    getCommand("vault").setTabCompleter(new TabCompletion());
     loadCommodoreData();
   }
 
