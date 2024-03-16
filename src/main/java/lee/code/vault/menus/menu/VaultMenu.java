@@ -11,6 +11,7 @@ import lee.code.vault.menus.system.MenuButton;
 import lee.code.vault.menus.system.MenuPaginatedGUI;
 import lee.code.vault.utils.CoreUtil;
 import lee.code.vault.utils.ItemUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -106,7 +108,10 @@ public class VaultMenu extends MenuPaginatedGUI {
   private ItemStack createDisplayItem(ItemStack item, int amount) {
     final ItemStack displayItem = new ItemStack(item);
     final ItemMeta displayItemMeta = displayItem.getItemMeta();
-    displayItemMeta.lore(Collections.singletonList(Lang.MENU_VAULT_ITEM_LORE.getComponent(new String[]{CoreUtil.parseValue(amount)})));
+    final List<Component> displayItemLore = new ArrayList<>();
+    if (displayItemMeta.hasLore()) displayItemLore.addAll(displayItemMeta.lore());
+    displayItemLore.add(Lang.MENU_VAULT_ITEM_LORE.getComponent(new String[]{CoreUtil.parseValue(amount)}));
+    displayItemMeta.lore(displayItemLore);
     displayItem.setItemMeta(displayItemMeta);
     return displayItem;
   }
